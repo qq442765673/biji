@@ -743,3 +743,191 @@ while (scan.hasNextDouble()) {
         }
         sc.close();
 
+##继承
+
+public class Penguin（孩子） **extends** Animal（父亲）
+子类拥有父类非 private 的属性、方法。
+
+子类可以拥有自己的属性和方法，即子类可以对父类进行扩展。
+
+子类可以用自己的方式实现父类的方法。
+
+Java 的继承是单继承，但是可以多重继承，单继承就是一个子类只能继承一个父类，多重继承就是，例如 A 类继承 B 类，B 类继承 C 类，所以按照关系就是 C 类是 B 类的父类，B 类是 A 类的父类，这是 Java 继承区别于 C++ 继承的一个特性。
+
+提高了类之间的耦合性（继承的缺点，耦合度高就会造成代码之间的联系越紧密，代码独立性越差）。
+
+###使用 implements 关键字可以变相的使java具有多继承的特性
+public class C implements A,B {
+}
+
+###super和this关键字
+
+class Dog extends Animal {
+  void eat() {
+    System.out.println("dog : eat");
+  }
+  void eatTest() {
+    this.eat();   // this 调用自己的方法
+    super.eat();  // super 调用父类方法
+  }
+}
+
+####经典代码，不动就看
+    class SuperClass {
+      private int n;
+      SuperClass(){
+        System.out.println("SuperClass()");
+      }
+      SuperClass(int n) {
+        System.out.println("SuperClass(int n)");
+        this.n = n;
+      }
+    }
+    // SubClass 类继承
+    class SubClass extends SuperClass{
+      private int n;
+      
+      SubClass(){ // 自动调用父类的无参数构造器
+        System.out.println("SubClass");
+      }  
+      
+      public SubClass(int n){ 
+        super(300);  // 调用父类中带有参数的构造器
+        System.out.println("SubClass(int n):"+n);
+        this.n = n;
+      }
+    }
+    // SubClass2 类继承
+    class SubClass2 extends SuperClass{
+      private int n;
+      
+      SubClass2(){
+        super(300);  // 调用父类中带有参数的构造器
+        System.out.println("SubClass2");
+      }  
+      
+      public SubClass2(int n){ // 自动调用父类的无参数构造器
+        System.out.println("SubClass2(int n):"+n);
+        this.n = n;
+      }
+    }
+    public class TestSuperSub{
+      public static void main (String args[]){
+        System.out.println("------SubClass 类继承------");
+        SubClass sc1 = new SubClass();
+        SubClass sc2 = new SubClass(100); 
+        System.out.println("------SubClass2 类继承------");
+        SubClass2 sc3 = new SubClass2();
+        SubClass2 sc4 = new SubClass2(200); 
+      }
+    }
+输出结果为：
+
+------SubClass 类继承------
+SuperClass()
+SubClass
+SuperClass(int n)
+SubClass(int n):100
+------SubClass2 类继承------
+SuperClass(int n)
+SubClass2
+SuperClass()
+SubClass2(int n):200
+
+##重载和重写
+
+###重写
+**重写是子类对父类的允许访问的方法的实现过程进行重新编写, 返回值和形参都不能改变。即外壳不变，核心重写！**
+
+**重写的好处在于子类可以根据需要，定义特定于自己的行为。 也就是说子类能够根据需要实现父类的方法。**
+
+####代码演示
+    class Animal{
+       public void move(){
+          System.out.println("动物可以移动");
+       }
+    }
+     
+    class Dog extends Animal{
+       public void move(){
+          System.out.println("狗可以跑和走");
+       }
+    }
+     
+    public class TestDog{
+       public static void main(String args[]){
+          Animal a = new Animal(); // Animal 对象
+          Animal b = new Dog(); // Dog 对象
+     
+          a.move();// 执行 Animal 类的方法
+     
+          b.move();//执行 Dog 类的方法
+       }
+    }
+
+####简单的认为重写时继承的一种，不过重新改写了一些地方而已
+类的继承，是在父类中存在可继承的成员A，而在子类中不存在同名成员，这样该成员会被继承到子类，当子类对象访问该成员时，实际访问的是父类的对应成员。
+类的重写，是在父类中存在可继承的成员A，而在子类中存在同名成员，这样该成员会被子类重写，当子类对象访问该成员时，实际访问的是子类的成员。
+所以二者的区别就是，当重写的时候，访问的重写成员与父类实际上是没有关系的，而继承时访问的是父类成员。
+
+###重载
+
+**重载(overloading) 是在一个类里面，方法名字相同，而参数不同。返回类型可以相同也可以不同。**
+**简单认为重载就是其一个方法对于传参不同情况而产生不同的反应**
+####不懂就看实例
+public class Overloading {
+    public int test(){
+        System.out.println("test1");
+        return 1;
+    }
+ 
+    public void test(int a){
+        System.out.println("test2");
+    }   
+ 
+    //以下两个参数类型顺序不同
+    public String test(int a,String s){
+        System.out.println("test3");
+        return "returntest3";
+    }   
+ 
+    public String test(String s,int a){
+        System.out.println("test4");
+        return "returntest4";
+    }   
+ 
+    public static void main(String[] args){
+        Overloading o = new Overloading();
+        System.out.println(o.test());
+        o.test(1);
+        System.out.println(o.test(1,"test3"));
+        System.out.println(o.test("test4",1));
+    }
+}
+
+
+![](./_image/2019-07-24-11-29-56.jpg)
+
+方法的重写(Overriding)和重载(Overloading)是java多态性的不同表现，重写是父类与子类之间多态性的一种表现，重载可以理解成多态的具体表现形式。
+
+###多态
+
+###抽象类
+
+在面向对象的概念中，所有的对象都是通过类来描绘的，但是反过来，并不是所有的类都是用来描绘对象的，如果一个类中没有包含足够的信息来描绘一个具体的对象，这样的类就是抽象类。
+
+抽象类除了不能实例化对象之外，类的其它功能依然存在，成员变量、成员方法和构造方法的访问方式和普通类一样。
+
+由于抽象类不能实例化对象，所以抽象类必须被继承，才能被使用。也是因为这个原因，通常在设计阶段决定要不要设计抽象类。
+
+####抽象类相关规定
+
+1. 抽象类不能被实例化(初学者很容易犯的错)，如果被实例化，就会报错，编译无法通过。只有抽象类的非抽象子类可以创建对象。
+
+2. 抽象类中不一定包含抽象方法，但是有抽象方法的类必定是抽象类。
+
+3. 抽象类中的抽象方法只是声明，不包含方法体，就是不给出方法的具体实现也就是方法的具体功能。
+
+4. 构造方法，类方法（用 static 修饰的方法）不能声明为抽象方法。
+
+5. 抽象类的子类必须给出抽象类中的抽象方法的具体实现，除非该子类也是抽象类。
